@@ -1,16 +1,26 @@
 import React from 'react'
 import {Row, Col} from 'antd'
 import './index.less'
+import Util from '../../utils/utils'
 
 export default class Header extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            userName: '',
+            sysTime:''
+        }
     }
     componentWillMount() {
         this.setState({
             userName: '汉宝宝'
         })
+        setInterval(()=>{
+            let sysTime = Util.formatDate(new Date().getTime());
+            this.setState({
+                sysTime
+            })
+        },1000)
     }
 
     render() {
@@ -27,7 +37,7 @@ export default class Header extends React.Component {
                         首页
                     </Col>
                     <Col span="20" className="weather">
-                        <span className="date">2019-5-5</span>
+                        <span className="date">{this.state.sysTime}</span>
                         <span className="weather-img">
                             <img src="" alt="" />
                         </span>
