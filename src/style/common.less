@@ -2,8 +2,24 @@
     .nav-left{
         height: calc(100vh);
         background-color: #001529;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
     .main{
         height: calc(100vh);
+        display:flex;
+        flex-direction: column;
+        .content{
+            position: relative;
+            padding: 20px;
+            flex:1;
+            background-color: #f1f3f5;
+            .content-wrap{
+                background-color: #fff;
+                height: 100%;
+            }
+        }
     }
 }

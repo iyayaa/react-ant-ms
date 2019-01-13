@@ -17,7 +17,9 @@ export default class Admin extends React.Component{
                 <Col span="21" className="main">
                     <Header></Header>
                     <Row className="content">
-                        Content
+                        <div className="content-wrap">
+                            Content
+                        </div>
                     </Row>
                     <Footer></Footer>
                 </Col>
