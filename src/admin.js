@@ -6,6 +6,7 @@ import NavLeft from './components/NavLeft'
 import './style/common.less'
 
 
+
 export default class Admin extends React.Component{
 
     render(){
@@ -18,7 +19,7 @@ export default class Admin extends React.Component{
                     <Header></Header>
                     <Row className="content">
                         <div className="content-wrap">
-                            Content
+                            {this.props.children}
                         </div>
                     </Row>
                     <Footer></Footer>
