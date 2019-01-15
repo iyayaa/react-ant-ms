@@ -21,6 +21,8 @@ export default class Gallery extends React.Component {
             ['16.png', '17.png', '18.png', '19.png', '20.png'],
             ['21.png', '22.png', '23.png', '24.png', '25.png']
         ]
+
+        //二次遍历
         const imgList = imgs.map((list) => list.map((item) =>
             <Card
                 style={{ marginBottom: 10 }}
@@ -29,8 +31,8 @@ export default class Gallery extends React.Component {
                 }
             >
                 <Card.Meta
-                    title="Admin"
-                    description="picture"
+                    title="picture"
+                    description="点击查看大图"
                 />
             </Card>
         ))
