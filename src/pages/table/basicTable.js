@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Modal, Table } from 'antd';
+import { Card, Modal, Table, Button, message } from 'antd';
 import axios from './../../axios'
 
 export default class BasicTable extends React.Component {
@@ -17,22 +17,40 @@ export default class BasicTable extends React.Component {
                     return item.key = index;
                 })
                 this.setState({
-                    dataSource2: res.result
+                    dataSource2: res.result,
+                    selectedRowKeys: [],
+                    selectedRows: null
                 })
+
             }
         })
     }
-    onRowClick = (record,index)=>{
+    onRowClick = (record, index) => {
         let selectKey = [index];
         Modal.info({
-            title:'信息',
-            content:`用户名：${record.userName},用户爱好：${record.interest}`
+            title: '信息',
+            content: `用户名：${record.userName},用户爱好：${record.interest}`
         })
         this.setState({
-            selectedRowKeys:selectKey,
+            selectedRowKeys: selectKey,
             // selectedItem: record
         })
     }
+    handleDelete = (() => {
+        let rows = this.state.selectedRows;
+        let ids = []
+        rows.map((item) => {
+            ids.push(item.id)
+        })
+        Modal.confirm({
+            title: '删除提示',
+            content: `确定? ${ids.join(',')}`,
+            onOk: () => {
+                message.success('删除成功')
+                this.request()  // 刷新页面
+            }
+        })
+    })
 
     componentDidMount() {
         const dataSource = [
@@ -138,10 +156,21 @@ export default class BasicTable extends React.Component {
             }
         ]
         // const selectedRowKeys = this.state.selectedRowKeys;
-        const {selectedRowKeys}= this.state;
+        const { selectedRowKeys } = this.state;
         const rowSelection = {
-            type:'radio',
+            type: 'radio',
             selectedRowKeys
+        }
+        const rowCheckSelection = {
+            type: 'checkbox',
+            selectedRowKeys: selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                //当点击checkbox的时候被调用 
+                this.setState({
+                    selectedRowKeys,
+                    selectedRows
+                })
+            }
         }
         return (
             <div>
@@ -165,13 +194,33 @@ export default class BasicTable extends React.Component {
                     <Table
                         bordered
                         rowSelection={rowSelection}
-                        onRow={(record,index) => {
+                        onRow={(record, index) => {
                             return {
-                                onClick:()=>{
-                                    this.onRowClick(record,index);
+                                onClick: () => {
+                                    this.onRowClick(record, index);
                                 }
                             };
                         }}
+                        columns={columns}
+                        dataSource={this.state.dataSource2}
+                        pagination={false}
+                    />
+                </Card>
+                <Card title="Mock-复选" style={{ margin: '10px 0' }}>
+                    <div style={{ marginBottom: 10 }}>
+                        <Button onClick={this.handleDelete}>删除</Button>
+                    </div>
+                    <Table
+                        bordered
+                        rowSelection={rowCheckSelection}
+                        onRow={(record, index) => {
+                            return {
+                                onClick: () => {
+                                    this.onRowClick(record, index);
+                                }
+                            }
+                        }
+                        }
                         columns={columns}
                         dataSource={this.state.dataSource2}
                         pagination={false}
