@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Button, Table, Form, Select, Modal, message, Divider } from 'antd'
+import { Card, Button, Table, Form, Select, Modal, message } from 'antd'
 import axios from './../../axios/index'
 import Utils from './../../utils/utils'
 
@@ -9,7 +9,8 @@ const Option = Select.Option
 export default class City extends React.Component {
 
     state = {
-        list:[]
+        list:[],
+        isShowOpenCity:false
     }
     params = {
         page:1
@@ -44,6 +45,27 @@ export default class City extends React.Component {
     }
     // 开通城市
     handleOpenCity = ()=>{
+        this.setState({
+            isShowOpenCity:true
+        })
+    }
+    handleSubmit = ()=>{
+        let cityInfo = this.cityForm.props.form.getFieldsValue();
+        // console.log(cityInfo);
+        axios.ajax({
+            url:'/city/open',
+            data:{
+                params:cityInfo
+            }
+        }).then((res)=>{
+            if(res.code === 0){
+                message.success('开通成功');
+                this.setState({
+                    isShowOpenCity:false
+                })
+                this.requestList();
+            }
+        })
     }
 
     render() {
@@ -98,6 +120,7 @@ export default class City extends React.Component {
                     <Button type="primary" onClick={this.handleOpenCity}>开通城市</Button>
                 </Card>
                 <div className="content-wrap">
+                {/* 显示城市状态 */}
                     <Table
                         bordered
                         columns={columns}
@@ -105,6 +128,19 @@ export default class City extends React.Component {
                         pagination={this.state.pagination}
                     />
                 </div>
+                <Modal 
+                    title="开通城市"
+                    visible={this.state.isShowOpenCity}
+                    onCancel={()=>{
+                        this.setState({
+                            isShowOpenCity:false
+                        })
+                    }}
+                    onOk={this.handleSubmit}
+                >
+                {/* modal中嵌套表单 */}
+                    <WrappedOpenCityForm wrappedComponentRef={(inst)=>{this.cityForm = inst}}/>
+                </Modal>
             </div>
         );
     }
@@ -181,3 +217,62 @@ class FilterForm extends React.Component{
     }
 }
 const WrappedFilterForm = Form.create({})(FilterForm);
+
+// 使用antD提供的getFieldDecorator 进行数据双向绑定，（字段名称，参数)(回调）
+// 使用antD提供的 wrappedComponentRef 得到表单的数据
+// 不同于普通开发中使用onChange事件完成数据绑定
+class OpenCityForm extends React.Component{
+    render(){
+        const formItemLayout = {
+            labelCol:{
+                span:5
+            },
+            wrapperCol:{
+                span:19
+            }
+        }
+        const { getFieldDecorator }  =this.props.form;
+        return (
+            <Form layout="horizontal">
+                <FormItem label="选择城市" {...formItemLayout}>
+                    {
+                        getFieldDecorator('city_id',{
+                            initialValue:'1'
+                        })(
+                            <Select style={{ width: 100 }}>
+                                <Option value="">全部</Option>
+                                <Option value="1">北京市</Option>
+                                <Option value="2">天津市</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="营运模式" {...formItemLayout}>
+                    {
+                        getFieldDecorator('op_mode', {
+                            initialValue: '1'
+                        })(
+                            <Select style={{ width: 100 }}>
+                                <Option value="1">自营</Option>
+                                <Option value="2">加盟</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="用车模式" {...formItemLayout}>
+                    {
+                        getFieldDecorator('use_mode', {
+                            initialValue: '1'
+                        })(
+                            <Select style={{ width: 100 }}>
+                                <Option value="1">指定停车点</Option>
+                                <Option value="2">禁停区</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+            </Form>
+        );
+    }
+}
+const WrappedOpenCityForm = Form.create({})(OpenCityForm);
