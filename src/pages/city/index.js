@@ -8,6 +8,40 @@ const Option = Select.Option
 
 export default class City extends React.Component {
 
+    state = {
+        list:[]
+    }
+    params = {
+        page:1
+    }
+    componentDidMount(){
+        this.requestList();
+    }
+
+    // 默认请求我们的接口数据
+    requestList = ()=>{
+        let _this = this;
+        axios.ajax({
+            url: '/open_city',
+            data:{
+                params:{
+                    page:this.params.page
+                }
+            }
+        }).then((res)=>{
+            let list = res.result.item_list.map((item, index) => {
+                item.key = index;
+                return item;
+            });
+            this.setState({
+                list:list,
+                pagination:Utils.pagination(res,(current)=>{
+                    _this.params.page = current;
+                    _this.requestList();
+                })
+            })
+        })
+    }
     // 开通城市
     handleOpenCity = ()=>{
     }
@@ -49,7 +83,7 @@ export default class City extends React.Component {
             }, {
                 title: '操作时间',
                 dataIndex: 'update_time',
-                render: Utils.formateDate
+                render: Utils.formatDate
             }, {
                 title: '操作人',
                 dataIndex: 'sys_user_name'
@@ -67,6 +101,8 @@ export default class City extends React.Component {
                     <Table
                         bordered
                         columns={columns}
+                        dataSource={this.state.list}
+                        pagination={this.state.pagination}
                     />
                 </div>
             </div>
