@@ -1,11 +1,10 @@
 import React from 'react';
-import { Card, Button, Table, Form, Select, DatePicker, Modal, message } from 'antd';
+import { Card, Button, Table, Form, Modal, message } from 'antd';
 import axios from '../../axios'
 import Utils from '../../utils/utils'
 import BaseForm from '../../components/BaseForm'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 export default class Order extends React.Component {
     state = {
         orderInfo: {},
@@ -100,6 +99,17 @@ export default class Order extends React.Component {
             selectedItem: record
         })
     }
+    openOrderDetail = ()=>{
+        let item = this.state.selectedItem;
+        if (!item) {
+            Modal.info({
+                title: '信息',
+                content: '请先选择一条订单'
+            })
+            return;
+        }
+        window.open(`/#/common/order/detail/${item.id}`,'_blank')
+    }
 
     render() {
         const columns = [
@@ -167,7 +177,7 @@ export default class Order extends React.Component {
                     <BaseForm />
                 </Card>
                 <Card style={{marginTop: '10px'}}>
-                    <Button type="primary">订单详情</Button>
+                    <Button type="primary" onClick={this.openOrderDetail}>订单详情</Button>
                     <Button type="primary" onClick={this.handleConfirm} style={{marginLeft: 20}}>结束订单</Button>
                 </Card>
                 <div className="content-wrap">
