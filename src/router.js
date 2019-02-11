@@ -4,6 +4,7 @@ import App from './App'
 import Login from './pages/login'
 import Admin from './admin'
 import NoMatch from './pages/nomatch'
+import Common from './common'
 
 
 import Buttons from './pages/ui/buttons'
@@ -51,7 +52,12 @@ export default class IRouter extends React.Component{
                     }>
                     </Route>
                     
-                    <Route path="/order/detail" component={Login}></Route>
+                    <Route path="/common" render={() =>
+                            <Common>
+                                <Route path="/common/order/detail/:orderId" component={Login} />
+                            </Common>
+                        }
+                        />
                 </App>
             </HashRouter>
         );
