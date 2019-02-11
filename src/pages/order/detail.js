@@ -26,8 +26,21 @@ export default class Order extends React.Component {
                 this.setState({
                     orderInfo: res.result
                 })
+                this.renderMap(res.result)
             }
         })
+    }
+    renderMap = (result)=>{
+        this.map = new window.BMap.Map('orderDetailMap');
+        this.map.centerAndZoom('杭州',11);
+        // 添加地图控件
+        this.addMapControl();
+    }
+    // 添加地图控件
+    addMapControl = ()=>{
+        let map = this.map;
+        map.addControl(new window.BMap.ScaleControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT}))
+        map.addControl(new window.BMap.NavigationControl({ anchor: window.BMAP_ANCHOR_TOP_RIGHT }))
     }
     render() {
         const info = this.state.orderInfo || {};
