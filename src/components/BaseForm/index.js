@@ -1,58 +1,93 @@
 import React from 'react';
-import {  Button, Form, Select, DatePicker } from 'antd';
+import { Button, Form, Select, DatePicker,Input, Checkbox } from 'antd';
+import Utils from '../../utils/utils'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 class FilterForm extends React.Component {
-    render() {
+
+    initFormList = () => {
         const { getFieldDecorator } = this.props.form;
+        const formList = this.props.formList;
+        const formItemList = [];
+        if (formList && formList.length > 0) {
+            formList.forEach((item, i) => {
+                let label = item.label;
+                let field = item.field;
+                let initialValue = item.initialValue || '';
+                let placeholder = item.placeholder;
+                let width = item.width;
+                if (item.type === '时间查询') {
+                    const begin_time = <FormItem label="订单时间" key={field}>
+                        {
+                            getFieldDecorator('begin_time')(
+                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss" />
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(begin_time)
+                    const end_time = <FormItem label="~" colon={false} key={field}>
+                        {
+                            getFieldDecorator('end_time')(
+                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD HH:mm:ss" />
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(end_time)
+                } else if (item.type === 'INPUT') {
+                    const INPUT = <FormItem label={label} key={field}>
+                        {
+                            getFieldDecorator([field], {
+                                initialValue: initialValue
+                            })(
+                                <Input type="text" placeholder={placeholder} />
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(INPUT)
+                } else if (item.type === 'SELECT') {
+                    const SELECT = <FormItem label={label} key={field}>
+                        {
+                            getFieldDecorator([field], {
+                                initialValue: initialValue
+                            })(
+                                <Select
+                                    style={{ width: width }}
+                                    placeholder={placeholder}
+                                >
+                                    {Utils.getOptionList(item.list)}
+                                </Select>
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(SELECT)
+                } else if (item.type === 'CHECKBOX') {
+                    const CHECKBOX = <FormItem label={label} key={field}>
+                        {
+                            getFieldDecorator([field], {
+                                valuePropName: 'checked',
+                                initialValue: initialValue //true | false
+                            })(
+                                <Checkbox>
+                                    {label}
+                                </Checkbox>
+                            )
+                        }
+                    </FormItem>;
+                    formItemList.push(CHECKBOX)
+                }
+            })
+        }
+        return formItemList;
+    }
+
+    render() {
         return (
             <Form layout="inline">
-                <FormItem label="城市">
-                    {
-                        getFieldDecorator('city_id',{
-                            initialValue: '1'
-                        })(
-                            <Select style={{ width: '100px' }}>
-                                <Option value="">全部</Option>
-                                <Option value="1">北京市</Option>
-                                <Option value="2">上海市</Option>
-                            </Select>
-                        )
-                    }
-                </FormItem>
-                <FormItem label="开始时间">
-                    {
-                        getFieldDecorator('start_time')(
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
-                        )
-                    }
-                </FormItem>
-                <FormItem label="结束时间">
-                    {
-                        getFieldDecorator('end_time')(
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
-                        )
-                    }
-                </FormItem>
-                <FormItem label="订单状态">
-                    {
-                        getFieldDecorator('op_mode',{
-                            initialValue: ''
-                        })(
-                            <Select style={{ width: '150px' }}>
-                                <Option value="">全部</Option>
-                                <Option value="1">进行中</Option>
-                                <Option value="2">进行中（临时锁车）</Option>
-                                <Option value="3">结束行程</Option>
-                            </Select>
-                        )
-                    }
-                </FormItem>
                 <FormItem>
-                    <Button type="primary">查询</Button>
-                    <Button style={{marginLeft: 20}}>重置</Button>
+                    {this.initFormList()}
+                    <Button type="primary" style={{ margin: '0 20px' }} >查询</Button>
+                    <Button>重置</Button>
                 </FormItem>
             </Form>
         );
