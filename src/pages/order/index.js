@@ -27,11 +27,11 @@ export default class Order extends React.Component {
                 params: this.params.page
             }
         }).then((res) => {
-            let dataSource = res.result.item_list.map((item,index) => {
+            let dataSource = res.result.item_list.map((item, index) => {
                 item.key = index;
                 return item;
             });
-            if(res.code === 0){
+            if (res.code === 0) {
                 this.setState({
                     dataSource,
                     pagination: Utils.pagination(res, (current) => {
@@ -46,7 +46,7 @@ export default class Order extends React.Component {
     // 结束订单
     handleConfirm = () => {
         let item = this.state.selectedItem;
-        if(!item){
+        if (!item) {
             Modal.info({
                 title: '信息',
                 content: '请选择一条信息进行结束'
@@ -61,7 +61,7 @@ export default class Order extends React.Component {
                 }
             }
         }).then((res) => {
-            if(res.code === 0){
+            if (res.code === 0) {
                 this.setState({
                     orderInfo: res.result,
                     orderConfirmVisible: true
@@ -82,7 +82,7 @@ export default class Order extends React.Component {
                 }
             }
         }).then((res) => {
-            if(res.code === 0){
+            if (res.code === 0) {
                 message.success('订单结束成功')
                 this.setState({
                     orderConfirmVisible: false
@@ -99,7 +99,7 @@ export default class Order extends React.Component {
             selectedItem: record
         })
     }
-    openOrderDetail = ()=>{
+    openOrderDetail = () => {
         let item = this.state.selectedItem;
         if (!item) {
             Modal.info({
@@ -108,17 +108,17 @@ export default class Order extends React.Component {
             })
             return;
         }
-        window.open(`/#/common/order/detail/${item.id}`,'_blank')
+        window.open(`/#/common/order/detail/${item.id}`, '_blank')
     }
 
     formList = [
         {
-            type:'SELECT',
-            label:'城市',
-            field:'city',
-            placeholder:'全部',
-            initialValue:'1',
-            width:80,
+            type: 'SELECT',
+            label: '城市',
+            field: 'city',
+            placeholder: '全部',
+            initialValue: '1',
+            width: 80,
             list: [{ id: '0', name: '全部' }, { id: '1', name: '北京' }, { id: '2', name: '天津' }, { id: '3', name: '上海' }]
         },
         {
@@ -127,13 +127,17 @@ export default class Order extends React.Component {
         {
             type: 'SELECT',
             label: '订单状态',
-            field:'order_status',
+            field: 'order_status',
             placeholder: '全部',
             initialValue: '1',
             width: 80,
             list: [{ id: '0', name: '全部' }, { id: '1', name: '进行中' }, { id: '2', name: '结束行程' }]
         }
     ]
+    handleFilter = (params) => {
+        this.params = params;
+        this.requestList();
+    }
 
     render() {
         const columns = [
@@ -156,7 +160,7 @@ export default class Order extends React.Component {
             {
                 title: '里程',
                 dataIndex: 'distance',
-                render(distance){
+                render(distance) {
                     return `${distance / 1000} km`
                 }
             },
@@ -186,8 +190,8 @@ export default class Order extends React.Component {
             }
         ]
         const formItemLayout = {
-            labelCol: {span: 5},
-            wrapperCol: {span: 10}
+            labelCol: { span: 5 },
+            wrapperCol: { span: 10 }
         }
         const selectedRowKeys = this.state.selectedRowKeys;
         const rowSelection = {
@@ -198,19 +202,19 @@ export default class Order extends React.Component {
         return (
             <div>
                 <Card>
-                    <BaseForm formList={this.formList} />
+                    <BaseForm formList={this.formList} filterSubmit={this.handleFilter} />
                 </Card>
-                <Card style={{marginTop: '10px'}}>
+                <Card style={{ marginTop: '10px' }}>
                     <Button type="primary" onClick={this.openOrderDetail}>订单详情</Button>
-                    <Button type="primary" onClick={this.handleConfirm} style={{marginLeft: 20}}>结束订单</Button>
+                    <Button type="primary" onClick={this.handleConfirm} style={{ marginLeft: 20 }}>结束订单</Button>
                 </Card>
                 <div className="content-wrap">
                     <Table
                         bordered
-                        onRow={(record,index) => {
+                        onRow={(record, index) => {
                             return {
                                 onClick: () => {
-                                    this.onRowClick(record,index);
+                                    this.onRowClick(record, index);
                                 }
                             }
                         }}
@@ -224,7 +228,7 @@ export default class Order extends React.Component {
                     title="结束订单"
                     visible={this.state.orderConfirmVisible}
                     width={600}
-                    onCancel = {() => {
+                    onCancel={() => {
                         this.setState({
                             orderConfirmVisible: false
                         })

@@ -80,14 +80,22 @@ class FilterForm extends React.Component {
         }
         return formItemList;
     }
+    handleFilterSubmit = ()=>{
+        let fieldsValue = this.props.form.getFieldsValue();
+        this.props.filterSubmit(fieldsValue);
+    }
+
+    reset = ()=>{
+        this.props.form.resetFields();
+    }
 
     render() {
         return (
             <Form layout="inline">
                 <FormItem>
                     {this.initFormList()}
-                    <Button type="primary" style={{ margin: '0 20px' }} >查询</Button>
-                    <Button>重置</Button>
+                    <Button type="primary" style={{ margin: '0 20px' }} onClick={this.handleFilterSubmit}>查询</Button>
+                    <Button onClick={this.reset}>重置</Button>
                 </FormItem>
             </Form>
         );
