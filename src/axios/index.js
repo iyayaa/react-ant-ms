@@ -18,12 +18,16 @@ export default class Axios {
     }
     static ajax(options) {
         let loading;
-        if (!options.data||(options.data && options.data.isShowLoading !== false)) {
+        if (!options.data || (options.data && options.data.isShowLoading !== false)) {
             loading = document.getElementById('ajaxLoading')
             loading.style.display = 'block'
         }
-        
-        let baseApi = 'https://www.easy-mock.com/mock/5c5586282dc21a7c56126e4d/mockapi'
+        let baseApi = ''
+        if (options.data.isMock) {
+            baseApi = 'https://www.easy-mock.com/mock/5c5586282dc21a7c56126e4d/mockapi';
+        } else {//生产环境下改成服务端的接口
+            baseApi = 'https://www.easy-mock.com/mock/5c5586282dc21a7c56126e4d/mockapi';
+        }
         return new Promise((resolve, reject) => {
             axios({
                 url: options.url,
@@ -33,7 +37,7 @@ export default class Axios {
                 params: (options.data && options.data.params) || ''
             })
                 .then((response) => {
-                    if (!options.data||(options.data && options.data.isShowLoading !== false)) {
+                    if (!options.data || (options.data && options.data.isShowLoading !== false)) {
                         loading = document.getElementById('ajaxLoading');
                         loading.style.display = 'none';
                     }
