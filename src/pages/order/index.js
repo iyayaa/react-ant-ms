@@ -131,7 +131,7 @@ export default class Order extends React.Component {
             field: 'order_status',
             placeholder: '全部',
             initialValue: '1',
-            width: 80,
+            width: 100,
             list: [{ id: '0', name: '全部' }, { id: '1', name: '进行中' }, { id: '2', name: '结束行程' }]
         }
     ]
