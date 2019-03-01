@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Select, DatePicker,Input, Checkbox } from 'antd';
+import { Button, Form, Select, DatePicker, Input, Checkbox } from 'antd';
 import Utils from '../../utils/utils'
 
 const FormItem = Form.Item;
@@ -40,7 +40,7 @@ class FilterForm extends React.Component {
                             getFieldDecorator([field], {
                                 initialValue: initialValue
                             })(
-                                <Input style={width} type="text" placeholder={placeholder} />
+                                <Input style={{ width: width }} type="text" placeholder={placeholder} />
                             )
                         }
                     </FormItem>;
@@ -75,26 +75,35 @@ class FilterForm extends React.Component {
                         }
                     </FormItem>;
                     formItemList.push(CHECKBOX)
-                }else if (item.type === 'DATEPICKER'){
-                    const Date= <FormItem label={label} key={field}>
+                } else if (item.type === 'DATEPICKER') {
+                    const Date = <FormItem label={label} key={field}>
                         {
                             getFieldDecorator('datepicker')(
-                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD"/>
+                                <DatePicker showTime={true} placeholder={placeholder} format="YYYY-MM-DD" />
                             )
                         }
                     </FormItem>;
                     formItemList.push(Date)
+                } else if (item.type === 'DATE') {
+                    const Date = (
+                        <FormItem label={label} key={field}>
+                            {getFieldDecorator([field])(
+                                <DatePicker showTime={true} placeholder={placeholder} />
+                            )}
+                        </FormItem>
+                    );
+                    formItemList.push(Date);
                 }
             })
         }
         return formItemList;
     }
-    handleFilterSubmit = ()=>{
+    handleFilterSubmit = () => {
         let fieldsValue = this.props.form.getFieldsValue();
         this.props.filterSubmit(fieldsValue);
     }
 
-    reset = ()=>{
+    reset = () => {
         this.props.form.resetFields();
     }
 
